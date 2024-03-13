@@ -21,6 +21,7 @@ pub fn spawn_player(mut commands: Commands, sprite_assets: Res<SpriteAssets>) {
     commands
         .spawn((
             PlayerTag,
+            Velocity::default(),
             Name::new("Player"),
             SpatialBundle::from_transform(Transform::from_translation(Vec3::ZERO)),
         ))
@@ -44,7 +45,21 @@ fn load_assets(mut sprite_assets: ResMut<SpriteAssets>, asset_server: Res<AssetS
     }
 }
 
-pub fn player_movment(input: Res<ButtonInput<KeyCode>>) {
+#[derive(Component, Debug)]
+pub struct Velocity {
+    pub linvel: Vec2,
+}
+
+impl Default for Velocity {
+    fn default() -> Self {
+        Self { linvel: Vec2::ZERO }
+    }
+}
+
+pub fn player_movment(
+    mut query: Query<&mut Velocity, With<PlayerTag>>,
+    input: Res<ButtonInput<KeyCode>>,
+) {
     let mut direction = Vec2::ZERO;
     for key in input.get_pressed() {
         match key {
@@ -55,5 +70,12 @@ pub fn player_movment(input: Res<ButtonInput<KeyCode>>) {
             _ => {}
         }
     }
-    info!("Direction: {:?}", direction);
+
+    for mut velocity in &mut query {
+        *velocity = Velocity {
+            linvel: direction.normalize_or_zero(),
+            ..default()
+        };
+        info!("Velocity: {:?}", *velocity);
+    }
 }
