@@ -4,7 +4,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, (load_assets, spawn_camera, spawn_player).chain())
-        .add_systems(Update, player_movment)
+        .add_systems(Update, (player_movment, velocity_move).chain()) // Add velocity move
         .insert_resource(ClearColor(Color::rgb(0.2, 0.0, 0.15)))
         .init_resource::<SpriteAssets>()
         .run();
@@ -76,6 +76,11 @@ pub fn player_movment(
             linvel: direction.normalize_or_zero(),
             ..default()
         };
-        info!("Velocity: {:?}", *velocity);
+    }
+}
+
+pub fn velocity_move(mut query: Query<(&Velocity, &mut Transform)>, time: Res<Time>) {
+    for (velocity, mut transform) in &mut query {
+        transform.translation += velocity.linvel.extend(0.0) * time.delta_seconds() * 50.;
     }
 }
