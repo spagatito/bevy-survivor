@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies.bevy]
-version = "0.12.0"
+version = "0.13.0"
 default-features = false
 features = [
     # Bevy functionality:
@@ -15,6 +15,9 @@ features = [
     "bevy_winit",         # Window management (cross-platform Winit backend)
     "bevy_render",        # Rendering framework core
     "bevy_core_pipeline", # Common rendering abstractions
+    "bevy_sprite",        # 2D (sprites) rendering
+    "png",                # PNG image format for simple 2D images
+    "asset_processor",    # Asset processing
 
     # Development/Debug features:
     "dynamic_linking", # Dynamic linking for faster compile-times
